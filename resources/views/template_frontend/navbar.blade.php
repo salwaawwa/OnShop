@@ -19,26 +19,6 @@
         <li class="nav-item">
         <a class="nav-link" style="color: white" href="{{ route('layanan.index')}}" onMouseOver="this.style.color='red'" onMouseOut="this.style.color='white'"> <b>LAYANAN</b> </a>
         </li>
-        @if (Route::has('login'))
-            @auth
-                @if(Auth::user()->admin == 0)
-                    <li class="nav-item">
-                        <a class="nav-link" style="color: white;margin-left:630px;" href="{{ url('check-out')}}" onMouseOver="this.style.color='red'" onMouseOut="this.style.color='white'">  <i class="fa fa-shopping-cart"></i> <b>Keranjang</b> </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" style="color: white;" href="{{route('history.index')}}" onMouseOver="this.style.color='red'" onMouseOut="this.style.color='white'">  <i class="fas fa-history"></i> <b>Histori</b> </a>
-                    </li>
-                @endif
-                @if(Auth::user()->admin == 1)
-                    <li class="nav-item">
-                        <a class="nav-link" style="color: white;margin-left:630px;" href="{{ url('check-out')}}" onMouseOver="this.style.color='red'" onMouseOut="this.style.color='white'">  <i class="fa fa-shopping-cart"></i> <b>Keranjang</b> </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" style="color: white;" href="{{route('history.index')}}" onMouseOver="this.style.color='red'" onMouseOut="this.style.color='white'">  <i class="fas fa-history"></i> <b>Histori</b> </a>
-                    </li>
-                @endif
-            @endauth
-        @endif
     </ul>
 
         <div class="float-right">
@@ -56,16 +36,20 @@
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     @if(Auth::user()->isAdmin())
-                                    <a class="dropdown-item" href="{{route('admin.index')}}">Admin</a>
+                                        <a class="dropdown-item" href="{{route('history.index')}}"  onMouseOver="this.style.color='red'" onMouseOut="this.style.color='black'" >  <i class="fas fa-history"></i> Histori </a>
+                                        <a class="dropdown-item" href="{{ url('check-out')}}"  onMouseOver="this.style.color='red'" onMouseOut="this.style.color='black'" >  <i class="fa fa-shopping-cart"></i> Keranjang</a>
+                                        <a class="dropdown-item" href="{{route('admin.index')}}"  onMouseOver="this.style.color='red'" onMouseOut="this.style.color='black'" > <i class="fa fa-user"></i> Admin</a>
                                     @endif
 
                                     @if(Auth::user()->admin == 0)
-                                    <a class="dropdown-item" href="{{route('setting-user.setting')}}">Setting Profile</a>
+                                        <a class="dropdown-item" href="{{route('history.index')}}" onMouseOver="this.style.color='red'" onMouseOut="this.style.color='black'" >  <i class="fas fa-history"></i> Histori </a>
+                                        <a class="dropdown-item" href="{{ url('check-out')}}"  onMouseOver="this.style.color='red'" onMouseOut="this.style.color='black'"  >  <i class="fa fa-shopping-cart"></i> Keranjang </a>
+                                        <a class="dropdown-item" href="{{route('setting-user.setting')}}"  onMouseOver="this.style.color='red'" onMouseOut="this.style.color='black'" ><i class="fas fa-cog"></i> Setting Profile</a>
                                     @endif
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault();
+                                    <a class="dropdown-item" href="{{ route('logout') }}"  onMouseOver="this.style.color='red'" onMouseOut="this.style.color='black'" 
+                                    onclick="event.preventDefault(); 
                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                      <i class="fas fa-sign-out-alt"></i>  {{ __('Logout') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
