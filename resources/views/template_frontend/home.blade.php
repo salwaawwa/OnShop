@@ -74,7 +74,7 @@
 
             .footer{
                 background-color: #475d2c;
-                height:170px;
+
             }
         </style>
     </head>

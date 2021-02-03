@@ -13,6 +13,6 @@ class Kapasitas extends Model
     }
 
     public function spesifikasi(){
-        return $this->hasMany('App\Spesifikasi','kapasitas_id','id');
+        return $this->hasMany(Spesifikasi::class,'kapasitas_id','id');
     }
 }

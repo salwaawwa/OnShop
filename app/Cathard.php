@@ -13,6 +13,6 @@ class Cathard extends Model
     }
 
     public function spesifikasi(){
-        return $this->hasMany('App\Spesifikasi','cathards_id','id');
+        return $this-hasMany(Spesifikasi::class,'cathards_id','id');
     }
 }

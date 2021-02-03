@@ -76,7 +76,10 @@
                                 @foreach($pesanan_details as $pesanan_detail)
                                     <tr>
                                         <td align="center"> {{ $no++ }} </td>
-                                        <td>{{$pesanan_detail->tipes->produks->produk}} {{$pesanan_detail->tipes->mereks->Merk}} {{ $pesanan_detail->tipes->tipe}} </td>
+                                        <td>
+                                            {{$pesanan_detail->tipes->produks->produk}} {{$pesanan_detail->tipes->mereks->Merk}} {{ $pesanan_detail->tipes->tipe}} <br>
+                                            <a href="{{ route('pesanan-spesifikasi.show',$pesanan_detail->id) }}">Show Spesifikasi</a>
+                                        </td>
                                         <td align="left"> 
                                             @if($pesanan_detail->tipes->costum == 0)
                                                 Rp. {{ number_format($pesanan_detail->tipes->harga)}}
@@ -98,14 +101,14 @@
 
                             <a href="{{route('pesanan-admin.index')}}" class="btn btn-outline-primary float-left">Kembali</a>
                             @if($pesanan->status == 1)
-                            <a href="{{route('pesanan.konfirmasi',$pesanan->id)}}" class="btn btn-success float-right btn-sm" >
-                                <i class="fa fa-check" aria-hidden="true"> Terima Pesanan</i>
-                            </a>
+                                <a href="{{route('pesanan.konfirmasi',$pesanan->id)}}" class="btn btn-success float-right btn-sm" >
+                                    <i class="fa fa-check" aria-hidden="true"> Terima Pesanan</i>
+                                </a>
                             @endif
                             @if($pesanan->status != 1 )
-                            <a href="{{route('cetak-history.detail', $pesanan->id)}}" class="btn btn-success float-right btn-sm" onclick="return confirm('Cetak Struk? ');" >
-                                <i class="fa fa-print"></i> Print</i>
-                            </a>
+                                <a href="{{route('cetak-history.detail', $pesanan->id)}}" class="btn btn-success float-right btn-sm" onclick="return confirm('Cetak Struk? ');" >
+                                    <i class="fa fa-print"></i> Print</i>
+                                </a>
                             @endif
                         </div>
                     </div>

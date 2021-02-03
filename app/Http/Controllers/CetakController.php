@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Tipe;
+use App\Spesifikasi;
 use App\Pesanan;
 use App\PesananDetail;
 use App\user;
@@ -16,15 +17,17 @@ class CetakController extends Controller
     public function cetak_detail($id){
         $user = user::where('id', Auth::user()->id)->first();
         $pesanan = Pesanan::where('id',$id)->first();
+       
         if(!empty($pesanan))
         {
             $pesanan_details = PesananDetail::where('pesanans_id', $pesanan->id)->get();
+            $spesifikasi = Spesifikasi::where('pesanans_id', $pesanan->id)->get();
         }
         else{
-            $pesanan_details = PesananDetail::where('pesanans_id',null)->get();
+            return abort(404);
         }
 
-        return view('admin.cetak.cetak-detail',compact('pesanan','pesanan_details','user'));
+        return view('admin.cetak.cetak-detail',compact('pesanan','pesanan_details','user','spesifikasi'));
     }
 
     //function cetak history pesanan detail user
@@ -36,7 +39,7 @@ class CetakController extends Controller
             $pesanan_details = PesananDetail::where('pesanans_id', $pesanan->id)->get();
         }
         else{
-            $pesanan_details = PesananDetail::where('pesanans_id',null)->get();
+            return abort(404);
         }
 
         return view('admin.cetak.cetak-detail',compact('pesanan','pesanan_details','user'));

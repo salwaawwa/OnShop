@@ -8,6 +8,8 @@ use App\Tipe;
 use App\Pesanan;
 use App\PesananDetail;
 use App\user;
+use App\Spesifikasi;
+use App\Cathard;
 use Auth;
 use Carbon\Carbon;
 use DataTables;
@@ -28,10 +30,27 @@ class PesananController extends Controller
             $pesanan_details = PesananDetail::where('pesanans_id', $pesanan->id)->get();
         }
         else{
-            $pesanan_details = PesananDetail::where('pesanans_id',null)->get();
+            return abort(404);
         }
 
         return view('admin.pesanan.pesanan-show',compact('pesanan','pesanan_details','user'));
+    }
+
+    //function show spesifikasi admin
+    public function showSpek($id){
+    
+        $pesananDet = PesananDetail::where('id',$id)->first();
+        if(!empty($pesananDet))
+        {
+            $spesifikasi = Spesifikasi::where('pesanan_details_id', $pesananDet->id)->get();
+           
+        }
+        else{
+            return abort(404);
+        }
+
+  
+        return view('admin.pesanan.pesanan-spesifikasi-show',compact('pesananDet','spesifikasi'));
     }
 
     //function button "diterima" di show pesanan admin
@@ -49,6 +68,7 @@ class PesananController extends Controller
     public function destroy($id){ 
         $pesanan = Pesanan::findorfail($id);
         $detail = PesananDetail::where('invoice_number', $pesanan->invoice_number)->get();
+        $spesifikasi = Spesifikasi::where('invoice_number', $pesanan->invoice_number)->get();
 
         try{
             //Kalo sukses
@@ -58,8 +78,14 @@ class PesananController extends Controller
                     $item->id,
                 ]);
             }
+            foreach($spesifikasi as $item){
+                array_push($ids,[
+                    $item->id,
+                ]);
+            }
 
             PesananDetail::destroy($ids);
+            Spesifikasi::destroy($ids);
             $pesanan->delete();
             return response()->json([
                 'status' => true,
@@ -143,7 +169,7 @@ class PesananController extends Controller
     //function data pesanan
     public function data()
     {
-        $data = Pesanan::where('status','!=',  4)->latest()->get();
+        $data = Pesanan::where('status','!=',  4)->where('status','!=',  0)->latest()->get();
 
         return DataTables::of($data)
                         ->addIndexColumn()

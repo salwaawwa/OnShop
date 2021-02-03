@@ -10,11 +10,13 @@ use DataTables;
 
 class UserController extends Controller
 {
+    //function form user
     public function form_user(){
         $data = User::where('id', Auth::id())->first();
         return view('user-setting.form',compact('data'));
     }
     
+    //function update user
     public function update_form_user(Request $request){
         $id = Auth::id();
 
@@ -47,34 +49,34 @@ class UserController extends Controller
     	}
     }
 
+    //function form admin
     public function form(){
     	$data = User::where('id', Auth::id())->first();
     	return view('admin.users.setting',compact('data'));
     }
 
+    //function update admin
     public function update_form(Request $request){
 
-    	$id = Auth::id();
+        $id = Auth::id();
 
     	\Validator::make($request->all(), [
-            'name'  => 'required|max:50|string',
-            'email' => 'email|required|unique:users',
-            'password' => 'required|confirmed|max:30',
-            'admin' =>'required',
+            'name'  => 'required|min:5|string',
+            'email' => 'email|required|unique:users,email,' .$id,
+            'password' => 'nullable|confirmed|min:6',
+            'password_confirmation' => 'same:password',
         ])->validate();
 
     	if(!empty($request->password)){
     		$field = [
     			'name' => $request->name,
     			'email' => $request->email,
-                'password' => bcrypt($request->password),
-                'admin' => $request->admin
+    			'password' => bcrypt($request->password),
     		];
     	}else{
     		$field = [
     			'name' => $request->name,
-                'email' => $request->email,
-                'admin' => $request->admin
+    			'email' => $request->email,
     		];
     	}
 

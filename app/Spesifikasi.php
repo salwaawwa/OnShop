@@ -17,10 +17,10 @@ class Spesifikasi extends Model
     }
 
     public function cathards(){
-        return $this->hasMany('App\Cathards','cathards_id','id');
+        return $this->belongsTo(Cathard::class);
     }
 
     public function kapasitas(){
-        return $this->hasMany('App\Kapasitas','kapasitas_id','id');
+        return $this->belongsTo(Kapasitas::class);
     }
 }

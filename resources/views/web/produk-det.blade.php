@@ -167,9 +167,8 @@
                                             <tr>
                                                 <td>Jumlah Pesanan</td>
                                                 <td> : </td>
-                                                <td>       
-                                                <input type="text" style="width:180px;height:25px;margin-top:5px;" name="jumlah_pesanan" class="form-control" 
-                                                    required="" class="float-left" placeholder="Jumlah Pesanan" autocomplete="off" autofocus>      
+                                                <td> 
+                                                    1      
                                                 </td>
                                             </tr>
                             </table>
@@ -244,7 +243,7 @@
     </div>
     <div class="card-body">
     <blockquote class="blockquote mb-0">
-        <form class="form-inline">
+        <!-- <form class="form-inline">
             <div class="row">
                 <div class="col-md-9">
                     <input class="form-control mr-sm-2" type="search" style="width:200px" placeholder="Cari Produk" aria-label="Search">
@@ -253,7 +252,7 @@
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fa fa-search"></i></button>
                 </div>
             </div>                   
-        </form>
+        </form> -->
 
         <ul class="list-group mt-3">
             @foreach($produks as $item)

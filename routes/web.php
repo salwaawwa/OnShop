@@ -32,6 +32,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::post('transaksi/{id}','TransaksiController@pesanan')->name('transaksi.pesanan');
     Route::get('check-out','TransaksiController@keranjang');
     Route::get('konfirmasi-check-out','TransaksiController@checkout')->name('konfirmasi.pesanan');
+    Route::get('spesifikasi/show/{id}','TransaksiController@showSpek')->name('spesifikasi.show');
     Route::delete('check-out/{id}','TransaksiController@delete')->name('check-out.delete');
 
     Route::get('history','HistoryController@index')->name('history.index');
@@ -78,6 +79,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('konfirmasi-pesan/{id}','LayananController@konfirmasi')->name('pesan-masuk.konfirmasi');
     
         Route::get('pesanan','PesananController@admin_index')->name('pesanan-admin.index');
+        Route::get('pesanan/spesifikasi/{id}','PesananController@showSpek')->name('pesanan-spesifikasi.show');
         Route::get('pesanan/data','PesananController@data')->name('pesanan.data');
         Route::get('pesanan/{id}','PesananController@show')->name('pesanan.show');
         Route::get('konfirmasi-pesanan/{id}','PesananController@konfirmasi')->name('pesanan.konfirmasi');

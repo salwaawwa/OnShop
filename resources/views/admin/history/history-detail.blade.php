@@ -76,8 +76,20 @@
                                 @foreach($pesanan_details as $pesanan_detail)
                                     <tr>
                                         <td align="center"> {{ $no++ }} </td>
-                                        <td>{{$pesanan_detail->tipes->produks->produk}} {{$pesanan_detail->tipes->mereks->Merk}} {{ $pesanan_detail->tipes->tipe}} </td>
-                                        <td align="left"> Rp. {{ number_format($pesanan_detail->tipes->harga)}} </td>
+                                        <td>
+                                            
+                                                {{$pesanan_detail->tipes->produks->produk}} {{$pesanan_detail->tipes->mereks->Merk}} {{ $pesanan_detail->tipes->tipe}} <br>
+                                                <a href="{{ route('pesanan-spesifikasi.show',$pesanan_detail->id) }}">Show Spesifikasi</a>
+                                
+                                        </td>
+                                        <td align="left"> 
+                                            @if($pesanan_detail->tipes->costum == 0)
+                                                Rp. {{ number_format($pesanan_detail->tipes->harga)}}
+                                            @endif 
+                                            @if($pesanan_detail->tipes->costum == 1)
+                                               Rp. {{ number_format ($pesanan_detail->jumlah_harga / $pesanan_detail->banyak) }}
+                                            @endif
+                                        </td>
                                         <td align="center"> {{ $pesanan_detail->banyak}} </td>
                                         <td align="left"> Rp. {{ number_format($pesanan_detail->jumlah_harga)}} </td>
                                     </tr>

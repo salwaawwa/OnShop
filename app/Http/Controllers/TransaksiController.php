@@ -17,8 +17,7 @@ use Carbon\Carbon;
 class TransaksiController extends Controller
 {
     //function pembelian
-    public function pesanan(Request $request,$id){
-       
+    public function pesanan(Request $request,$id){ 
 
         if(Auth::check() == NULL){
             return redirect()->route('login')->with('fail','Anda Belum Login. Silahkan Login Dahulu');
@@ -70,7 +69,12 @@ class TransaksiController extends Controller
                 $pesanan_detail = new PesananDetail;
                 $pesanan_detail->tipes_id = $tipe->id;
                 $pesanan_detail->pesanans_id = $pesanan_baru->id;
-                $pesanan_detail->banyak = $request->jumlah_pesanan;
+                if($tipe->costum == 0){
+                    $pesanan_detail->banyak = $request->jumlah_pesanan;
+                }
+                if($tipe->costum == 1){
+                    $pesanan_detail->banyak = 1;
+                }
                 $pesanan_detail->invoice_number = $cek_pesanan ? $cek_pesanan->invoice_number : $pesanan->invoice_number ;
                 if($tipe->costum == 0){
                     $pesanan_detail->jumlah_harga = $tipe->harga*$request->jumlah_pesanan;
@@ -95,40 +99,55 @@ class TransaksiController extends Controller
                             $spek->save();
                         }
 
-                        $pesanan_detail->jumlah_harga = $totalHargaSpek*$request->jumlah_pesanan;
+                        $pesanan_detail->jumlah_harga = $totalHargaSpek*1;
        
                     } 
                 $pesanan_detail->update();
                 
 
-            }
-            else{
+            }else{
                 $pesanan_detail = PesananDetail::where('tipes_id',$tipe->id)->where('pesanans_id',$pesanan_baru->id)->first();
-
-                $pesanan_detail->banyak = $pesanan_detail->banyak+$request->jumlah_pesanan;
-
-                // Harga Sekarang
                 if($tipe->costum == 0){
+                   
+                    $pesanan_detail->banyak = $pesanan_detail->banyak+$request->jumlah_pesanan;
+
+                    // Harga Sekarang
+                
                     $harga_pesan_detail_baru = $tipe->harga*$request->jumlah_pesanan;
                     $pesanan_detail->jumlah_harga = $pesanan_detail->jumlah_harga+ $harga_pesan_detail_baru;
+
+                    $pesanan_detail->update();
                 }if($tipe->costum == 1){ 
-                    $spesifikasi = Spesifikasi::where('pesanans_id',$pesanan_baru->id)->first();
+                    $pesanan_detail = new PesananDetail;
+                    $pesanan_detail->tipes_id = $tipe->id;
+                    $pesanan_detail->pesanans_id = $pesanan_baru->id;
+                    $pesanan_detail->banyak = 1;
+                    $pesanan_detail->invoice_number = $cek_pesanan ? $cek_pesanan->invoice_number : $pesanan->invoice_number ;
+                    $pesanan_detail->jumlah_harga =0;
+                    $pesanan_detail->save();
+                        
                     $totalHargaSpek = 0;
-                        foreach($request->hardware as $key=>$value){
-                            $kapasitas = Kapasitas::find($value);
-                            $spesifikasi->cathards_id = $key;
-                            $spesifikasi->kapasitas_id = $value;
-                            $spesifikasi->jumlah_harga = $kapasitas->harga;
+                    foreach($request->hardware as $key=>$value){
+                        $kapasitas = Kapasitas::find($value);
+                        $spek = new Spesifikasi;
+                        $spek->pesanans_id = $pesanan_baru->id;
+                        $spek->pesanan_details_id = $pesanan_detail->id;
+                        $spek->cathards_id = $key;
+                        $spek->kapasitas_id = $value;
+                        $spek->invoice_number = $cek_pesanan ? $cek_pesanan->invoice_number : $pesanan->invoice_number ;
+                        $spek->jumlah_harga = $kapasitas->harga;
 
-                            $totalHargaSpek += $kapasitas->harga;
-                            $spesifikasi->save();
-                        }
-
-                    $harga_pesan_detail_baru = $totalHargaSpek*$request->jumlah_pesanan;
-                    $pesanan_detail->jumlah_harga = $pesanan_detail->jumlah_harga+$harga_pesan_detail_baru;
-                    //$harga_pesan_detail_baru = $pesanan_detail->jumlah_harga*$request->jumlah_pesanan;
+                        $totalHargaSpek += $kapasitas->harga;
+                        $spek->save();
+                    }
+    
+                    $pesanan_detail->jumlah_harga = $totalHargaSpek*1;
+           
+                        
+                    $pesanan_detail->update();
+                  
                 }
-                $pesanan_detail->update();
+               
             }
 
             //jumlah Total
@@ -154,6 +173,22 @@ class TransaksiController extends Controller
         }
 
         return view('transaksi.keranjang',compact('pesanan','pesanan_details'));
+    }
+
+    //function show spesifikasi User
+    public function showSpek($id){
+        $pesananDet = PesananDetail::where('id',$id)->first();
+        if(!empty($pesananDet))
+        {
+            $spesifikasi = Spesifikasi::where('pesanan_details_id', $pesananDet->id)->get();
+           
+        }
+        else{
+            return abort(404);
+        }
+
+  
+        return view('transaksi.spesifikasi-show',compact('pesananDet','spesifikasi'));
     }
 
     //function delete barang di keranjang user
