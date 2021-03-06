@@ -225,6 +225,7 @@ class TransaksiController extends Controller
     public function checkout(){
         $user = user::where('id', Auth::user()->id)->first();
         $pesanan = Pesanan::where('users_id',Auth::user()->id)->where('status',0)->first();
+       
         $pesanan_id = $pesanan->id;
         
         $pesanan->status = 1;
@@ -234,7 +235,11 @@ class TransaksiController extends Controller
         foreach($pesanan_details as $pesanan_detail)
         {
             $tipe = Tipe::where('id',$pesanan_detail->tipes_id)->first();
-            $tipe->stok = $tipe->stok - $pesanan_detail->banyak;
+            if($pesanan_detail->tipes_id == 0){
+                $tipe->stok = 0;
+            }else{
+                $tipe->stok = $tipe->stok - $pesanan_detail->banyak;
+            }
             $tipe->update();
         }
 

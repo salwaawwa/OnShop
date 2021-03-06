@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Str;
 use App\Cathard;
+use App\Kapasitas;
+use App\Spesifikasi;
 use DataTables;
 
 class CathardController extends Controller
@@ -65,17 +67,43 @@ class CathardController extends Controller
 
     public function destroy($slug)
     {
+
         $cathard = Cathard::find($slug);
-        if ($cathard) {
+        $kapasitas = Kapasitas::where('cathards_id', $cathard->id)->get();
+
+        try{
+            //Kalo sukses
+            $ids = [];
+            foreach($kapasitas as $item){
+                array_push($ids,[
+                    $item->id,
+                ]); 
+
+                $spek = Spesifikasi::where('cathards_id', $cathard->id)
+                                    ->where('kapasitas_id', $item->id)
+                                    ->get();
+
+                foreach($spek as $item){
+                    $item->cathards_id = 0;
+                    $item->kapasitas_id = 0;
+                    $item->update();
+                }
+
+            }
+
+            Kapasitas::destroy($ids);
             $cathard->delete();
             return response()->json([
                 'status' => true,
-                'pesan'  => 'Hardware berhasil di hapus'
+                'pesan'  => 'Kategori berhasil di hapus'
             ]);
-        } else {
-            return response()->json([
+
+        }catch(\throwable $th) {
+            //Kalo error
+            throw $th;
+             return response()->json([
                 'status' => false,
-                'pesan'  => 'Hardware gagal di hapus'
+                'pesan'  => 'Kategori gagal di hapus'
             ]);
         }
     }

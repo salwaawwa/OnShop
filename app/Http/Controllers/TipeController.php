@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Tipe;
 use App\Merek;
 use App\Produk;
+use App\PesananDetail;
 use DataTables;
 
 class TipeController extends Controller
@@ -138,16 +139,41 @@ class TipeController extends Controller
 
     public function destroy($slug)
     {
+        // $tipe = Tipe::find($slug);
+        // if ($tipe) {
+        //     unlink('storage/gambar-tipe/' .$tipe->gambar);
+        //     $tipe->delete();
+        //     return response()->json([
+        //         'status' => true,
+        //         'pesan'  => 'Tipe berhasil di hapus'
+        //     ]);
+        // } else {
+        //     return response()->json([
+        //         'status' => false,
+        //         'pesan'  => 'Tipe gagal di hapus'
+        //     ]);
+        // }
+
         $tipe = Tipe::find($slug);
-        if ($tipe) {
+        $detail = PesananDetail::where('tipes_id', $tipe->id)->get();
+
+        try{
+            //Kalo sukses
+            foreach($detail as $item){
+                $item->tipes_id = 0;
+                $item->update();
+            }
             unlink('storage/gambar-tipe/' .$tipe->gambar);
             $tipe->delete();
             return response()->json([
                 'status' => true,
                 'pesan'  => 'Tipe berhasil di hapus'
             ]);
-        } else {
-            return response()->json([
+
+        }catch(\throwable $th) {
+            //Kalo error
+            throw $th;
+             return response()->json([
                 'status' => false,
                 'pesan'  => 'Tipe gagal di hapus'
             ]);

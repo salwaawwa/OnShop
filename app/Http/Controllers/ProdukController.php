@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Str;
 use App\Produk;
+use App\Merek;
+use App\Tipe;
+use App\Pesanandetail;
 use DataTables;
 
 class ProdukController extends Controller
@@ -68,18 +71,51 @@ class ProdukController extends Controller
     public function destroy($slug)
     {
         $produk = Produk::find($slug);
-        if ($produk) {
+        $merk = Merek::where('produks_id', $produk->id)->get();
+        $tipe = Tipe::where('produks_id', $produk->id)->get();
+
+        try{
+            //Kalo sukses
+            $ids = [];
+            foreach($merk as $item){
+                array_push($ids,[
+                    $item->id,
+                ]);
+            }
+            foreach($tipe as $item){
+                array_push($ids,[
+                    $item->id,
+                ]);
+                
+                $detail = PesananDetail::where('tipes_id', $item->id)->get();
+                foreach($detail as $item){
+                    $item->tipes_id = 0;
+                    $item->update();
+                }
+
+                unlink('storage/gambar-tipe/' .$item->gambar);
+                if($item->mereks_id != $produk->id){
+                    $item->delete();
+                }
+            }
+
+            Merek::destroy($ids);
+            Tipe::destroy($ids);
             $produk->delete();
             return response()->json([
                 'status' => true,
                 'pesan'  => 'Produk berhasil di hapus'
             ]);
-        } else {
-            return response()->json([
+
+        }catch(\throwable $th) {
+            //Kalo error
+            throw $th;
+             return response()->json([
                 'status' => false,
                 'pesan'  => 'Produk gagal di hapus'
             ]);
         }
+
     }
 
 

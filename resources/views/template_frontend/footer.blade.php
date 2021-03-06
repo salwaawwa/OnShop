@@ -21,9 +21,9 @@
             </div>
             <div class="col-md-3 mt-4">
                 
-                    <img src="{{ asset('assets/img/fb.PNG')}}" style="margin-righ:10px" alt="facebook" title="logo" height="80">
-                    <img src="{{ asset('assets/img/ig.PNG')}}"  alt="instagram" title="logo" height="80">
-                    <img src="{{ asset('assets/img/twit.PNG')}}" style="height:60px" alt="twiter" title="logo" height="80">
+                <a href="#"><img src="{{ asset('assets/img/fb.PNG')}}" style="margin-righ:10px" alt="facebook" title="logo" height="80"></a> 
+                <a href="#"><img src="{{ asset('assets/img/ig.PNG')}}"  alt="instagram" title="logo" height="80"></a>
+                <a href="#"><img src="{{ asset('assets/img/twit.PNG')}}" style="height:60px" alt="twiter" title="logo" height="80"></a>    
                 
                
                 <br><br>

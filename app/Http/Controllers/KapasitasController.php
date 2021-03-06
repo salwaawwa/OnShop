@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 
 use App\Kapasitas;
 use App\Cathard;
+use App\Spesifikasi;
 use DataTables;
 
 class KapasitasController extends Controller
@@ -125,16 +126,30 @@ class KapasitasController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($slug)
-    {
+    { 
+
         $kapasitas = Kapasitas::find($slug);
-        if ($kapasitas) {
+        $spek = Spesifikasi::where('kapasitas_id', $kapasitas->id)->get();
+        
+        try{
+            //Kalo sukses
+            $ids = [];
+
+                foreach($spek as $item){
+                    $item->kapasitas_id = 0;
+                    $item->update();
+                }
+
             $kapasitas->delete();
             return response()->json([
                 'status' => true,
                 'pesan'  => 'Kapasitas berhasil di hapus'
             ]);
-        } else {
-            return response()->json([
+
+        }catch(\throwable $th) {
+            //Kalo error
+            throw $th;
+             return response()->json([
                 'status' => false,
                 'pesan'  => 'Kapasitas gagal di hapus'
             ]);
@@ -152,7 +167,11 @@ class KapasitasController extends Controller
                             return $hardware->hardware;
                         })
                         ->editColumn('harga', function($data){
-                            return \Awa::Rupiah($data->harga);
+                            if($data->harga > 0){
+                                return \Awa::Rupiah($data->harga);
+                            }else{
+                                return "Rp. 0";
+                            }                
                         })
                         ->addColumn('action', function($data){
                             $button = '<a href="'. route('kapasitas.edit', $data->slug) .'" class="edit btn btn-info btn-sm edit-post"><i class="far fa-edit"></i>Edit</a>' ;

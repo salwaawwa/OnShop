@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Merek;
 use App\Produk;
+use App\Tipe;
+use App\PesananDetail;
 use DataTables;
 
 class MerkController extends Controller
@@ -124,14 +126,39 @@ class MerkController extends Controller
     public function destroy($slug)
     {
         $merk = Merek::find($slug);
-        if ($merk) {
+        $tipe = Tipe::where('mereks_id', $merk->id)->get();
+        
+        try{
+            //Kalo sukses
+            $ids = [];
+
+            foreach($tipe as $item){
+                array_push($ids,[
+                    $item->id,
+                ]);
+
+                $detail = PesananDetail::where('tipes_id', $item->id)->get();
+                foreach($detail as $item){
+                    $item->tipes_id = 0;
+                    $item->update();
+                }
+
+                unlink('storage/gambar-tipe/' .$item->gambar);
+            }
+
+           
+
+            Tipe::destroy($ids);
             $merk->delete();
             return response()->json([
                 'status' => true,
                 'pesan'  => 'Merk berhasil di hapus'
             ]);
-        } else {
-            return response()->json([
+
+        }catch(\throwable $th) {
+            //Kalo error
+            throw $th;
+             return response()->json([
                 'status' => false,
                 'pesan'  => 'Merk gagal di hapus'
             ]);

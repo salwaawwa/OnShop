@@ -7,7 +7,7 @@
     <section class="section">
 
         <div class="section-header">
-            <h1>Show Pesanan Diraakit</h1>
+            <h1>Show Pesanan Selesai</h1>
         </div>
 
         <div class="section-body">
@@ -77,20 +77,24 @@
                                     <tr>
                                         <td align="center"> {{ $no++ }} </td>
                                         <td>
-                                            @if($pesanan_detail->tipes->costum == 0)
-                                                {{$pesanan_detail->tipes->produks->produk}} {{$pesanan_detail->tipes->mereks->Merk}} {{ $pesanan_detail->tipes->tipe}} 
-                                            @endif
-                                            @if($pesanan_detail->tipes->costum == 1)
+                                            @if($pesanan_detail->tipes_id == 0)
+                                                <p style="color:red"><b>Barang Sudah dihapus Oleh Admin</b> </p> 
+                                            @else
                                                 {{$pesanan_detail->tipes->produks->produk}} {{$pesanan_detail->tipes->mereks->Merk}} {{ $pesanan_detail->tipes->tipe}} <br>
                                                 <a href="{{ route('pesanan-spesifikasi.show',$pesanan_detail->id) }}">Show Spesifikasi</a>
                                             @endif
+                                           
                                         </td>
                                         <td align="left"> 
-                                            @if($pesanan_detail->tipes->costum == 0)
-                                                Rp. {{ number_format($pesanan_detail->tipes->harga)}}
-                                            @endif 
-                                            @if($pesanan_detail->tipes->costum == 1)
-                                               Rp. {{ number_format ($pesanan_detail->jumlah_harga / $pesanan_detail->banyak) }}
+                                            @if($pesanan_detail->tipes_id == 0)
+                                                Rp. {{ number_format ($pesanan_detail->jumlah_harga / $pesanan_detail->banyak) }}
+                                            @else
+                                                @if($pesanan_detail->tipes->costum == 0)
+                                                    Rp. {{ number_format($pesanan_detail->tipes->harga)}}
+                                                @endif 
+                                                @if($pesanan_detail->tipes->costum == 1)
+                                                Rp. {{ number_format ($pesanan_detail->jumlah_harga / $pesanan_detail->banyak) }}
+                                                @endif
                                             @endif
                                         </td>
                                         <td align="center"> {{ $pesanan_detail->banyak}} </td>

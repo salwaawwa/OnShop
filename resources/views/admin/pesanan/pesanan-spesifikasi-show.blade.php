@@ -77,15 +77,44 @@
                                                     @foreach($spesifikasi as $item)
                                                     <tr>
                                                         <td>-</td>
-                                                        <td>{{$item->cathards->hardware}}</td>
+                                                        <td>
+                                                            @if($item->cathards_id == 0)
+                                                                <p style="color:red"><b>Hardware Sudah dihapus Oleh Admin</b> </p> 
+                                                            @else
+                                                                {{$item->cathards->hardware}}
+                                                            @endif
+                                                        </td>
                                                         <td> : </td>
-                                                        <td>{{$item->kapasitas->kapasitas}} </td>
+                                                        <td>
+                                                            @if($item->kapasitas_id == 0)
+                                                                <p style="color:red"><b>Kapasitas Sudah dihapus Oleh Admin</b> </p> 
+                                                            @else
+                                                                {{$item->kapasitas->kapasitas}} 
+                                                            @endif
+                                                        </td>
                                                         <td> => </td>
                                                         <td>
-                                                            @if($item->kapasitas->harga == 0)
-                                                                Rp. 0
-                                                            @endif 
-                                                            {{Awa::Rupiah($item->kapasitas->harga)}}
+                                                            @if($item->kapasitas_id == 0 && $item->cathards_id == 0)
+                                                                @if($item->jumlah_harga == 0)
+                                                                    Rp. 0
+                                                                @endif
+                                                                {{Awa::Rupiah($item->jumlah_harga)}}
+                                                            @elseif($item->kapasitas_id == 0 )
+                                                                @if($item->jumlah_harga == 0)
+                                                                    Rp. 0
+                                                                @endif
+                                                                {{Awa::Rupiah($item->jumlah_harga)}}
+                                                            @elseif($item->cathards_id == 0 )
+                                                                @if($item->jumlah_harga == 0)
+                                                                    Rp. 0
+                                                                @endif
+                                                                {{Awa::Rupiah($item->jumlah_harga)}}
+                                                            @else
+                                                                @if($item->kapasitas->harga == 0)
+                                                                    Rp. 0
+                                                                @endif 
+                                                                {{Awa::Rupiah($item->kapasitas->harga)}}
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                     @endforeach
